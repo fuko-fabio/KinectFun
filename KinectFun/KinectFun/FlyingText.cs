@@ -4,14 +4,14 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+
 namespace KinectFun
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Media;
-
     // FlyingText creates text that flys out from a given point, and fades as it gets bigger.
     // NewFlyingText() can be called as often as necessary, and there can be many texts flying out at once.
     public class FlyingText

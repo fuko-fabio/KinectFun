@@ -61,7 +61,7 @@ namespace KinectFun.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TODO Here should be some info about avaliable commands, how to play etc.
+        ///   Looks up a localized string similar to Stand in front of the Kinect to initialize game and use gestures to start..
         /// </summary>
         internal static string Vocabulary {
             get {

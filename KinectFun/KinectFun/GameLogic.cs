@@ -20,12 +20,10 @@ namespace KinectFun
     class GameLogic
     {
         private GameMode gameMode;
-
-        public readonly Dictionary<int, Player> players = new Dictionary<int, Player>();
         private Rect rect;
         private bool runningGameThread;
         private DateTime predNextFrame;
-        private double targetFramerate;
+        private double targetFramerate = 25;
         private double actualFrameTime;
         private DateTime lastFrameDrawn;
         private int frameCount;
@@ -33,12 +31,15 @@ namespace KinectFun
         private double TimerResolution = 2; //ms
         private Dispatcher dispatcher;
         private Canvas playField;
+        public bool gameIsStarted { get; set; }
+        public readonly Dictionary<int, Player> players = new Dictionary<int, Player>();
 
         public GameLogic(Dispatcher dispatcher, Rect rect, Canvas playField)
         {
             this.dispatcher = dispatcher;
             this.rect = rect;
             this.playField = playField;
+            gameIsStarted = false;
         }
         public int playersAlive { get; set; }
 
@@ -85,6 +86,7 @@ namespace KinectFun
                         this.rect,
                         true,
                         Color.FromArgb(200, 255, 255, 255));
+                    this.gameIsStarted = false;
                 }
 
                 this.playersAlive = alive;
@@ -141,8 +143,12 @@ namespace KinectFun
         private void HandleGameTimer(int param)
         {
             playField.Children.Clear();
-            //TODO draw game scene
-            
+
+            if (gameIsStarted)
+            {
+                //TODO draw game scene and manage players actions
+            }
+
             foreach (var player in this.players)
             {
                 player.Value.Draw(playField.Children);

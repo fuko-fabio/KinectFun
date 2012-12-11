@@ -1,11 +1,11 @@
 ﻿using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Media;
-    using System.Windows.Shapes;
-    using Microsoft.Kinect;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
+using Microsoft.Kinect;
 using KinectFun.Utils;
 
 namespace KinectFun
@@ -13,7 +13,8 @@ namespace KinectFun
     class Player
     {
         private readonly int id;
-        private static int colorId;
+        private long points = 0;
+        private int colorId;
         private Rect playerBounds;
         private Point playerCenter;
         private double playerScale;
@@ -46,6 +47,16 @@ namespace KinectFun
 
         public bool IsAlive { get; set; }
         public DateTime LastUpdated { get; set; }
+
+        public void AddPoints(int points)
+        {
+            this.points += points;
+        }
+
+        public long GetPoints()
+        {
+            return this.points;
+        }
 
         public int GetId()
         {

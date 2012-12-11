@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Vocabulary" xml:space="preserve">
-    <value>TODO Here should be some info about avaliable commands, how to play etc</value>
+    <value>Stand in front of the Kinect to initialize game and use gestures to start.</value>
   </data>
 </root>
