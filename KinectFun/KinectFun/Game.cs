@@ -136,8 +136,7 @@ namespace KinectFun
                     }
                 }
 
-                this.predNextFrame += TimeSpan.FromMilliseconds(1000.0 / this.targetFramerate);
-               
+                this.predNextFrame += TimeSpan.FromMilliseconds(1000.0 / this.targetFramerate);             
                 this.dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Send, new Action<int>(this.HandleGameTimer), 0);
             }
         }
@@ -148,7 +147,7 @@ namespace KinectFun
             UpdateBackground();
             if (GameIsStarted)
             {
-                //TODO draw game scene and manage players actions
+                UptadeGameState();
             }
 
             foreach (var player in this.players)
@@ -158,28 +157,18 @@ namespace KinectFun
 
             BannerText.Draw(playField.Children);
             FlyingText.Draw(playField.Children);
-            
+           
             this.CheckPlayers();
+        }
+
+        private void UptadeGameState()
+        {
+            //TODO draw game objects and manage players actions
         }
 
         public void UpdateBackground()
         {
-
-        
-            PointCollection myPointCollection = new PointCollection();
-            myPointCollection.Add(new Point(0, 0));
-            myPointCollection.Add(new Point(0, 1));
-            myPointCollection.Add(new Point(1, 1));
-
-            Polygon myPolygon = new Polygon();
-            myPolygon.Points = myPointCollection;
-            myPolygon.Fill = Brushes.Green;
-            myPolygon.Width = playField.Width;
-            myPolygon.Height = playField.Height / 4;
-            myPolygon.Stretch = Stretch.Fill;
-
-
-            //this.playField.Children.Add(myPolygon);
+            //TODO Game backround
         }
     }
 

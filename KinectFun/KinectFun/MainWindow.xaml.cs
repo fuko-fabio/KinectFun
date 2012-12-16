@@ -29,17 +29,17 @@ namespace KinectFun
 {
     public partial class MainWindow : Window
     {
-        public static readonly DependencyProperty KinectSensorManagerProperty =
+        public static readonly DependencyProperty kinectSensorManagerProperty =
             DependencyProperty.Register(
                 "KinectSensorManager",
                 typeof(KinectSensorManager),
                 typeof(MainWindow),
                 new PropertyMetadata(null));
 
-        public KinectSensorManager KinectSensorManager
+        public KinectSensorManager kinectSensorManager
         {
-            get { return (KinectSensorManager)GetValue(KinectSensorManagerProperty); }
-            set { SetValue(KinectSensorManagerProperty, value); }
+            get { return (KinectSensorManager)GetValue(kinectSensorManagerProperty); }
+            set { SetValue(kinectSensorManagerProperty, value); }
         }
 
         private readonly KinectSensorChooser sensorChooser = new KinectSensorChooser();
@@ -55,15 +55,15 @@ namespace KinectFun
 
         private Game game;
 
-        private const int TimerResolution = 2;  // ms
+        private const int timerResolution = 2;  // ms
         [DllImport("Winmm.dll", EntryPoint = "timeBeginPeriod")]
-        private static extern int TimeBeginPeriod(uint period);
+        private static extern int timeBeginPeriod(uint period);
 
         public MainWindow()
         {
-            this.KinectSensorManager = new KinectSensorManager();
-            this.KinectSensorManager.KinectSensorChanged += this.KinectSensorChanged;
-            this.DataContext = this.KinectSensorManager;
+            this.kinectSensorManager = new KinectSensorManager();
+            this.kinectSensorManager.KinectSensorChanged += this.KinectSensorChanged;
+            this.DataContext = this.kinectSensorManager;
 
             InitializeComponent();
 
@@ -72,7 +72,7 @@ namespace KinectFun
 
             // Bind the KinectSensor from the sensorChooser to the KinectSensor on the KinectSensorManager
             var kinectSensorBinding = new Binding("Kinect") { Source = this.sensorChooser };
-            BindingOperations.SetBinding(this.KinectSensorManager, KinectSensorManager.KinectSensorProperty, kinectSensorBinding);
+            BindingOperations.SetBinding(this.kinectSensorManager, KinectSensorManager.KinectSensorProperty, kinectSensorBinding);
 
             this.RestoreWindowState();
         }
@@ -97,7 +97,7 @@ namespace KinectFun
             this.UpdatePlayFieldSize();
             this.game = new Game(this.Dispatcher, this.screenRect, this.playField);
 
-            TimeBeginPeriod(TimerResolution);
+            timeBeginPeriod(timerResolution);
             var myGameThread = new Thread(this.game.GameThread);
             myGameThread.SetApartmentState(ApartmentState.STA);
             myGameThread.Start();
@@ -120,7 +120,7 @@ namespace KinectFun
 
         private void WindowClosed(object sender, EventArgs e)
         {
-            this.KinectSensorManager.KinectSensor = null;
+            this.kinectSensorManager.KinectSensor = null;
         }
 
         private void KinectSensorChanged(object sender, KinectSensorManagerEventArgs<KinectSensor> args)
@@ -131,7 +131,7 @@ namespace KinectFun
             }
             if (args.NewValue != null)
             {
-                this.InitializeKinectServices(this.KinectSensorManager, args.NewValue);
+                this.InitializeKinectServices(this.kinectSensorManager, args.NewValue);
             }
         }
 
@@ -159,6 +159,7 @@ namespace KinectFun
 
         private void OnGestureRecognized(object sender, GestureEventArgs e)
         {
+            //TODO Connect gesture type to appropriate action
             switch (e.GestureType)
             {
                 case GestureType.Menu:
