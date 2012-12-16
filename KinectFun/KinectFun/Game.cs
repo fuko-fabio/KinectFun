@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace KinectFun
@@ -17,13 +18,13 @@ namespace KinectFun
         TwoPlayer = 2
     }
 
-    class GameLogic
+    class Game
     {
         private GameMode gameMode;
         private Rect rect;
         private bool runningGameThread;
         private DateTime predNextFrame;
-        private double targetFramerate = 25;
+        private double targetFramerate = 20;
         private double actualFrameTime;
         private DateTime lastFrameDrawn;
         private int frameCount;
@@ -31,17 +32,18 @@ namespace KinectFun
         private double TimerResolution = 2; //ms
         private Dispatcher dispatcher;
         private Canvas playField;
-        public bool gameIsStarted { get; set; }
+        public bool GameIsStarted { get; set; }
         public readonly Dictionary<int, Player> players = new Dictionary<int, Player>();
 
-        public GameLogic(Dispatcher dispatcher, Rect rect, Canvas playField)
+        public Game(Dispatcher dispatcher, Rect rect, Canvas playField)
         {
             this.dispatcher = dispatcher;
             this.rect = rect;
             this.playField = playField;
-            gameIsStarted = false;
+            GameIsStarted = false;
+            UpdateBackground();
         }
-        public int playersAlive { get; set; }
+        public int PlayersAlive { get; set; }
 
 
         internal void SetGameMode(GameMode gameMode)
@@ -64,7 +66,7 @@ namespace KinectFun
             // Count alive players
             int alive = this.players.Count(player => player.Value.IsAlive);
 
-            if (alive != this.playersAlive)
+            if (alive != this.PlayersAlive)
             {
                 if (alive == 2)
                 {
@@ -79,17 +81,17 @@ namespace KinectFun
                     this.SetGameMode(GameMode.Off);
                 }
 
-                if (this.playersAlive == 0)
+                if (this.PlayersAlive == 0)
                 {
                     BannerText.NewBanner(
                         Properties.Resources.Vocabulary,
                         this.rect,
                         true,
                         Color.FromArgb(200, 255, 255, 255));
-                    this.gameIsStarted = false;
+                    this.GameIsStarted = false;
                 }
 
-                this.playersAlive = alive;
+                this.PlayersAlive = alive;
             }
         }
 
@@ -143,8 +145,8 @@ namespace KinectFun
         private void HandleGameTimer(int param)
         {
             playField.Children.Clear();
-
-            if (gameIsStarted)
+            UpdateBackground();
+            if (GameIsStarted)
             {
                 //TODO draw game scene and manage players actions
             }
@@ -156,8 +158,29 @@ namespace KinectFun
 
             BannerText.Draw(playField.Children);
             FlyingText.Draw(playField.Children);
-
+            
             this.CheckPlayers();
         }
+
+        public void UpdateBackground()
+        {
+
+        
+            PointCollection myPointCollection = new PointCollection();
+            myPointCollection.Add(new Point(0, 0));
+            myPointCollection.Add(new Point(0, 1));
+            myPointCollection.Add(new Point(1, 1));
+
+            Polygon myPolygon = new Polygon();
+            myPolygon.Points = myPointCollection;
+            myPolygon.Fill = Brushes.Green;
+            myPolygon.Width = playField.Width;
+            myPolygon.Height = playField.Height / 4;
+            myPolygon.Stretch = Stretch.Fill;
+
+
+            //this.playField.Children.Add(myPolygon);
+        }
     }
+
 }

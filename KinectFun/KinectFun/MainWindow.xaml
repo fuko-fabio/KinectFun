@@ -7,11 +7,11 @@
         Title="Kinect Fun" Loaded="WindowLoaded" Closed="WindowClosed" Closing="WindowClosing" PreviewMouseMove="HandlePreviewMouseMove">
     <Grid>
         <Grid
-            Background="Black">
+            Background="#FF43D4E8">
             <Rectangle
                 Height="28"
                 VerticalAlignment="Top"
-                Fill="Black"
+                Fill="#FF43D4E8"
                 PreviewMouseDown="HandleHeaderPreviewMouseDown" />
             <Button
                 HorizontalAlignment="Right"
@@ -66,79 +66,79 @@
             <Rectangle
                 Stroke="{x:Null}"
                 VerticalAlignment="Top"
-                Height="7"
+                Height="2"
                 x:Name="top"
                 PreviewMouseDown="HandleRectanglePreviewMouseDown"
                 MouseMove="HandleRectangleMouseMove"
-                Margin="8,0,8,0"
-                Fill="#00000000" />
+                Margin="2,0,2,0"
+                Fill="#000000" />
             <Rectangle
                 Stroke="{x:Null}"
                 x:Name="bottom"
-                Height="7"
+                Height="2"
                 VerticalAlignment="Bottom"
                 PreviewMouseDown="HandleRectanglePreviewMouseDown"
                 MouseMove="HandleRectangleMouseMove"
-                Margin="8,0,8,0"
-                Fill="#00000000" />
+                Margin="2,0,2,0"
+                Fill="#000000" />
             <Rectangle
                 Stroke="{x:Null}"
                 HorizontalAlignment="Left"
-                Margin="0,7,0,7"
-                Width="8"
+                Margin="0,2,0,2"
+                Width="2"
                 x:Name="left"
                 PreviewMouseDown="HandleRectanglePreviewMouseDown"
                 MouseMove="HandleRectangleMouseMove"
-                Fill="#00000000" />
+                Fill="#000000" />
             <Rectangle
                 Stroke="{x:Null}"
-                Margin="0,7,0,7"
-                Width="8"
+                Margin="0,2,0,2"
+                Width="2"
                 HorizontalAlignment="Right"
                 x:Name="right"
                 PreviewMouseDown="HandleRectanglePreviewMouseDown"
                 MouseMove="HandleRectangleMouseMove"
-                Fill="#00000000" />
+                Fill="#000000" />
             <Rectangle
                 Stroke="{x:Null}"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
-                Width="8"
-                Height="7"
+                Width="2"
+                Height="2"
                 x:Name="bottomLeft"
                 PreviewMouseDown="HandleRectanglePreviewMouseDown"
                 MouseMove="HandleRectangleMouseMove"
-                Fill="#00000000" />
+                Fill="#000000" />
             <Rectangle
                 Stroke="{x:Null}"
                 VerticalAlignment="Bottom"
-                Height="7"
-                Width="8"
+                Height="2"
+                Width="2"
                 HorizontalAlignment="Right"
                 x:Name="bottomRight"
                 PreviewMouseDown="HandleRectanglePreviewMouseDown"
                 MouseMove="HandleRectangleMouseMove"
-                Fill="#00000000" />
+                Fill="#000000" />
             <Rectangle
                 Stroke="{x:Null}"
                 HorizontalAlignment="Right"
-                Width="8"
-                Height="7"
+                Width="2"
+                Height="2"
                 VerticalAlignment="Top"
                 x:Name="topRight"
                 PreviewMouseDown="HandleRectanglePreviewMouseDown"
                 MouseMove="HandleRectangleMouseMove"
-                Fill="#00000000" />
+                Fill="#000000" />
             <Rectangle
                 Stroke="{x:Null}"
                 HorizontalAlignment="Left"
-                Width="8"
+                Width="2"
                 VerticalAlignment="Top"
-                Height="7"
+                Height="2"
                 x:Name="topLeft"
                 PreviewMouseLeftButtonDown="HandleRectanglePreviewMouseDown"
                 MouseMove="HandleRectangleMouseMove"
-                Fill="#00000000" />
+                Fill="#000000" />
             <Path
                 x:Name="m_resize"
                 x:FieldModifier="private"

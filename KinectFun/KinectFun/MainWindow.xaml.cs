@@ -53,7 +53,7 @@ namespace KinectFun
         private Rect screenRect;
         private Rect bannerRect;
 
-        private GameLogic gameLogic;
+        private Game game;
 
         private const int TimerResolution = 2;  // ms
         [DllImport("Winmm.dll", EntryPoint = "timeBeginPeriod")]
@@ -95,10 +95,10 @@ namespace KinectFun
         {
             this.playField.ClipToBounds = true;
             this.UpdatePlayFieldSize();
-            this.gameLogic = new GameLogic(this.Dispatcher, this.screenRect, this.playField);
+            this.game = new Game(this.Dispatcher, this.screenRect, this.playField);
 
             TimeBeginPeriod(TimerResolution);
-            var myGameThread = new Thread(this.gameLogic.GameThread);
+            var myGameThread = new Thread(this.game.GameThread);
             myGameThread.SetApartmentState(ApartmentState.STA);
             myGameThread.Start();
 
@@ -159,33 +159,32 @@ namespace KinectFun
 
         private void OnGestureRecognized(object sender, GestureEventArgs e)
         {
-            Debug.WriteLine(e.GestureType);
-
             switch (e.GestureType)
             {
                 case GestureType.Menu:
-
+                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Menu");
                     break;
                 case GestureType.WaveRight:
-
+                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Wave right");
                     break;
                 case GestureType.WaveLeft:
-
+                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Wave left");
                     break;
                 case GestureType.JoinedHands:
-                    gameLogic.gameIsStarted = true;
+                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Joined hands");
+                    game.GameIsStarted = true;
                     break;
                 case GestureType.SwipeLeft:
-    
+                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Swipe left");
                     break;
                 case GestureType.SwipeRight:
-
+                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Swipe right");
                     break;
                 case GestureType.ZoomIn:
-
+                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Zoom in");
                     break;
                 case GestureType.ZoomOut:
-
+                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Zoom out");
                     break;
 
                 default:
@@ -221,9 +220,9 @@ namespace KinectFun
             this.playerBounds.Y = this.playField.ActualHeight * 0.2;
             this.playerBounds.Height = this.playField.ActualHeight * 0.75;
 
-            if (this.gameLogic != null)
+            if (this.game != null)
             {
-                foreach (var player in this.gameLogic.players)
+                foreach (var player in this.game.players)
                 {
                     player.Value.SetBounds(this.playerBounds);
                 }
@@ -250,72 +249,19 @@ namespace KinectFun
                         if (SkeletonTrackingState.Tracked == skeleton.TrackingState)
                         {
 
-                            if (!gameLogic.gameIsStarted)
+                            if (!game.GameIsStarted)
                             {
-                                // update the gesture controller
+                                // TODO FIXME Gesture controller should use only one skeleton!?
                                 gestureController.UpdateAllGestures(skeleton);
+                                // If player is detected firs time show welcome message
                                 if (firstSkeletonRecognition)
                                 {
                                     FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Welcome dude!");
                                     firstSkeletonRecognition = false;
                                 }
                             }
-                
-                            Player player;
-                            if (this.gameLogic.players.ContainsKey(skeletonSlot))
-                            {
-                                player = this.gameLogic.players[skeletonSlot];
-                            }
-                            else
-                            {
-                                player = new Player(skeletonSlot);
-                                player.SetBounds(this.playerBounds);
-                                this.gameLogic.players.Add(skeletonSlot, player);
-                            }
 
-                            player.LastUpdated = DateTime.Now;
-
-                            // Update player's bone and joint positions
-                            if (skeleton.Joints.Count > 0)
-                            {
-                                player.IsAlive = true;
-
-                                // Head, hands, feet (hit testing happens in order here)
-                                player.UpdateJointPosition(skeleton.Joints, JointType.Head);
-                                player.UpdateJointPosition(skeleton.Joints, JointType.HandLeft);
-                                player.UpdateJointPosition(skeleton.Joints, JointType.HandRight);
-                                player.UpdateJointPosition(skeleton.Joints, JointType.FootLeft);
-                                player.UpdateJointPosition(skeleton.Joints, JointType.FootRight);
-
-                                // Hands and arms
-                                player.UpdateBonePosition(skeleton.Joints, JointType.HandRight, JointType.WristRight);
-                                player.UpdateBonePosition(skeleton.Joints, JointType.WristRight, JointType.ElbowRight);
-                                player.UpdateBonePosition(skeleton.Joints, JointType.ElbowRight, JointType.ShoulderRight);
-
-                                player.UpdateBonePosition(skeleton.Joints, JointType.HandLeft, JointType.WristLeft);
-                                player.UpdateBonePosition(skeleton.Joints, JointType.WristLeft, JointType.ElbowLeft);
-                                player.UpdateBonePosition(skeleton.Joints, JointType.ElbowLeft, JointType.ShoulderLeft);
-
-                                // Head and Shoulders
-                                player.UpdateBonePosition(skeleton.Joints, JointType.ShoulderCenter, JointType.Head);
-                                player.UpdateBonePosition(skeleton.Joints, JointType.ShoulderLeft, JointType.ShoulderCenter);
-                                player.UpdateBonePosition(skeleton.Joints, JointType.ShoulderCenter, JointType.ShoulderRight);
-
-                                // Legs
-                                player.UpdateBonePosition(skeleton.Joints, JointType.HipLeft, JointType.KneeLeft);
-                                player.UpdateBonePosition(skeleton.Joints, JointType.KneeLeft, JointType.AnkleLeft);
-                                player.UpdateBonePosition(skeleton.Joints, JointType.AnkleLeft, JointType.FootLeft);
-
-                                player.UpdateBonePosition(skeleton.Joints, JointType.HipRight, JointType.KneeRight);
-                                player.UpdateBonePosition(skeleton.Joints, JointType.KneeRight, JointType.AnkleRight);
-                                player.UpdateBonePosition(skeleton.Joints, JointType.AnkleRight, JointType.FootRight);
-
-                                player.UpdateBonePosition(skeleton.Joints, JointType.HipLeft, JointType.HipCenter);
-                                player.UpdateBonePosition(skeleton.Joints, JointType.HipCenter, JointType.HipRight);
-
-                                // Spine
-                                player.UpdateBonePosition(skeleton.Joints, JointType.HipCenter, JointType.ShoulderCenter);
-                            }
+                            UpdatePlayersSkeletons(skeletonSlot, skeleton);
                         }
                         skeletonSlot++;
                     }
@@ -323,7 +269,66 @@ namespace KinectFun
             }
         }
 
-    /// Interaction logic for MainWindow.xaml
+        private void UpdatePlayersSkeletons(int skeletonSlot, Skeleton skeleton)
+        {
+            Player player;
+            if (this.game.players.ContainsKey(skeletonSlot))
+            {
+                player = this.game.players[skeletonSlot];
+            }
+            else
+            {
+                player = new Player(skeletonSlot);
+                player.SetBounds(this.playerBounds);
+                this.game.players.Add(skeletonSlot, player);
+            }
+
+            player.LastUpdated = DateTime.Now;
+
+            // Update player's bone and joint positions
+            if (skeleton.Joints.Count > 0)
+            {
+                player.IsAlive = true;
+
+                // Head, hands, feet (hit testing happens in order here)
+                player.UpdateJointPosition(skeleton.Joints, JointType.Head);
+                player.UpdateJointPosition(skeleton.Joints, JointType.HandLeft);
+                player.UpdateJointPosition(skeleton.Joints, JointType.HandRight);
+                player.UpdateJointPosition(skeleton.Joints, JointType.FootLeft);
+                player.UpdateJointPosition(skeleton.Joints, JointType.FootRight);
+
+                // Hands and arms
+                player.UpdateBonePosition(skeleton.Joints, JointType.HandRight, JointType.WristRight);
+                player.UpdateBonePosition(skeleton.Joints, JointType.WristRight, JointType.ElbowRight);
+                player.UpdateBonePosition(skeleton.Joints, JointType.ElbowRight, JointType.ShoulderRight);
+
+                player.UpdateBonePosition(skeleton.Joints, JointType.HandLeft, JointType.WristLeft);
+                player.UpdateBonePosition(skeleton.Joints, JointType.WristLeft, JointType.ElbowLeft);
+                player.UpdateBonePosition(skeleton.Joints, JointType.ElbowLeft, JointType.ShoulderLeft);
+
+                // Head and Shoulders
+                player.UpdateBonePosition(skeleton.Joints, JointType.ShoulderCenter, JointType.Head);
+                player.UpdateBonePosition(skeleton.Joints, JointType.ShoulderLeft, JointType.ShoulderCenter);
+                player.UpdateBonePosition(skeleton.Joints, JointType.ShoulderCenter, JointType.ShoulderRight);
+
+                // Legs
+                player.UpdateBonePosition(skeleton.Joints, JointType.HipLeft, JointType.KneeLeft);
+                player.UpdateBonePosition(skeleton.Joints, JointType.KneeLeft, JointType.AnkleLeft);
+                player.UpdateBonePosition(skeleton.Joints, JointType.AnkleLeft, JointType.FootLeft);
+
+                player.UpdateBonePosition(skeleton.Joints, JointType.HipRight, JointType.KneeRight);
+                player.UpdateBonePosition(skeleton.Joints, JointType.KneeRight, JointType.AnkleRight);
+                player.UpdateBonePosition(skeleton.Joints, JointType.AnkleRight, JointType.FootRight);
+
+                player.UpdateBonePosition(skeleton.Joints, JointType.HipLeft, JointType.HipCenter);
+                player.UpdateBonePosition(skeleton.Joints, JointType.HipCenter, JointType.HipRight);
+
+                // Spine
+                player.UpdateBonePosition(skeleton.Joints, JointType.HipCenter, JointType.ShoulderCenter);
+            }
+        }
+
+        /// Interaction logic for MainWindow.xaml do not change here nothing!
 
         private const Int32 WM_SYSCOMMAND = 0x112;
 
