@@ -62,7 +62,34 @@
                 BorderThickness="1"
                 BorderBrush="LightGray"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch" />
+                VerticalAlignment="Stretch" >
+                <Label x:Name="points" FontSize="20">
+                    <Label Content="" RenderTransformOrigin="0.5,0.5">
+                        <Label.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform X="100"/>
+                            </TransformGroup>
+                        </Label.RenderTransform>
+                    </Label>
+                </Label>
+            </Border>
+            <Border>
+                <Label x:Name="pointstext" FontSize="20">
+                    <Label Content="Points:" RenderTransformOrigin="0.5,0.5">
+                        <Label.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform X="10"/>
+                            </TransformGroup>
+                        </Label.RenderTransform>
+                    </Label>
+                </Label>
+            </Border>
             <Rectangle
                 Stroke="{x:Null}"
                 VerticalAlignment="Top"

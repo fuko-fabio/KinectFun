@@ -64,7 +64,6 @@ namespace KinectFun
             this.kinectSensorManager = new KinectSensorManager();
             this.kinectSensorManager.KinectSensorChanged += this.KinectSensorChanged;
             this.DataContext = this.kinectSensorManager;
-
             InitializeComponent();
 
             this.SensorChooserUI.KinectSensorChooser = sensorChooser;
@@ -95,7 +94,7 @@ namespace KinectFun
         {
             this.playField.ClipToBounds = true;
             this.UpdatePlayFieldSize();
-            this.game = new Game(this.Dispatcher, this.screenRect, this.playField);
+            this.game = new Game(this.points, this.Dispatcher, this.screenRect, this.playField);
 
             timeBeginPeriod(timerResolution);
             var myGameThread = new Thread(this.game.GameThread);
@@ -166,14 +165,17 @@ namespace KinectFun
                     FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Menu");
                     break;
                 case GestureType.WaveRight:
-                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Wave right");
+                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Baloons +10");
+                    game.baloons = game.baloons + 10;
                     break;
                 case GestureType.WaveLeft:
-                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Wave left");
+                    FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Baloons -10");
+                    game.baloons = game.baloons - 10;
                     break;
                 case GestureType.JoinedHands:
                     FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Joined hands");
-                    game.GameIsStarted = true;
+                    game.ClearPlayField();
+                    game.StartGame();
                     break;
                 case GestureType.SwipeLeft:
                     FlyingText.NewFlyingText(this.screenRect.Width / 30, new Point(this.screenRect.Width / 2, this.screenRect.Height / 2), "Swipe left");

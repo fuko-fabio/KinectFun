@@ -23,7 +23,7 @@ namespace KinectFun
         private const double handSize = 0.03;
         private readonly Dictionary<Bone, BoneData> segments = new Dictionary<Bone, BoneData>();
 
-        private readonly Brush jointsBrush;
+        public readonly Brush jointsBrush;
         private readonly Brush bonesBrush;
 
         public Player(int skeletonSlot)
@@ -47,6 +47,8 @@ namespace KinectFun
 
         public bool IsAlive { get; set; }
         public DateTime LastUpdated { get; set; }
+        public Point leftHandPosition { get; set; }
+        public Point rightHandPosition { get; set; }
 
         public void AddPoints(int points)
         {
@@ -73,6 +75,14 @@ namespace KinectFun
 
         public void UpdateJointPosition(Microsoft.Kinect.JointCollection joints, JointType j)
         {
+            if (j == JointType.HandLeft)
+            {
+                leftHandPosition = new Point((joints[j].Position.X * this.playerScale) + this.playerCenter.X , (((joints[j].Position.Y * -1) * this.playerScale) + this.playerCenter.Y));
+            }
+            if (j == JointType.HandRight)
+            {
+                rightHandPosition = new Point((joints[j].Position.X * this.playerScale) + this.playerCenter.X, (((joints[j].Position.Y * -1) * this.playerScale) + this.playerCenter.Y));
+            }
             var seg = new Segment(
                 (joints[j].Position.X * this.playerScale) + this.playerCenter.X,
                 this.playerCenter.Y - (joints[j].Position.Y * this.playerScale)) { radius = this.playerBounds.Height * ((j == JointType.Head) ? headSize : handSize) / 2 };
